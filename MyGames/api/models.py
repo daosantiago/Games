@@ -37,3 +37,10 @@ class Console(Item):
 
     def __str__(self):
         return self.name
+
+class Genre(Item):
+    name = models.CharField("Gênero de jogo",max_length=50)
+
+    class Meta:
+        verbose_name='Gênero'
+        ordering=['name']
