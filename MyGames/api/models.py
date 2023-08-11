@@ -27,7 +27,9 @@ class Game(Item):
     
 class Console(Item):
     """Modelo para representar o consoles de video game"""
-    name = models.CharField("Nome da consola",max_length=250)
+    name = models.CharField("Nome do console",max_length=250)
+    shortName = models.CharField("Abreviação ou Apelido", max_length=50)
+
 
     class Meta:
         verbose_name='Console'
