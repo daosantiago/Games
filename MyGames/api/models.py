@@ -28,3 +28,10 @@ class Game(Item):
 class Console(Item):
     """Modelo para representar o consoles de video game"""
     name = models.CharField("Nome da consola",max_length=250)
+
+    class Meta:
+        verbose_name='Console'
+        ordering=['name']
+
+    def __str__(self):
+        return self.name
