@@ -15,7 +15,7 @@ class Item(models.Model):
 class Game(Item):
     """Modelo para representar os jogos cadastrados"""
     title = models.CharField("Nome do jogo", max_length=1024, unique=True)
-    # imagem = models.ImageField("Capa do Jogo ", upload_to="games")
+    imagem = models.ImageField("Capa do Jogo ", upload_to="games")
     
     class Meta:
         verbose_name='Jogo'
