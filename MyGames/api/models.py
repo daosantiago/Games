@@ -22,4 +22,9 @@ class Game(Item):
         ordering=['title']
 
     def __str__(self):
-        return self.titulo
+        return self.title
+
+    
+class Console(Item):
+    """Modelo para representar o consoles de video game"""
+    name = models.CharField("Nome da consola",max_length=250)
