@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0019_evaluation_platform'),
+        ("api", "0019_evaluation_platform"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='evaluation',
-            name='title',
-            field=models.CharField(blank=True, max_length=50, null=True, verbose_name='Título da avaliação'),
+            model_name="evaluation",
+            name="title",
+            field=models.CharField(
+                blank=True, max_length=50, null=True, verbose_name="Título da avaliação"
+            ),
         ),
     ]

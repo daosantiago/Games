@@ -59,8 +59,8 @@ class Genres(admin.ModelAdmin):
 
 
 class Evaluations(admin.ModelAdmin):
-    list_display = ("id", "user", "title")
-    list_display_links = ("id", "user")
+    list_display = ("id", "title", "user")
+    list_display_links = ("id", "title")
     readonly_fields = ("user",)
 
     fields = ("title", "description", "platform", "game", "user")

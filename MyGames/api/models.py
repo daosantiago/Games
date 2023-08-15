@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 
 
 class Item(models.Model):
-    """Modelo para representar as informações comuns para todas as tabelas do banco de dados"""
+    """Modelo para representar as informações comuns para todas as tabelas do banco de
+    dados"""
 
     description = models.TextField("Descrição")
     created = models.DateTimeField("Criado em ", auto_now_add=True)
@@ -16,7 +17,6 @@ class Item(models.Model):
 
 class Genre(Item):
     name = models.CharField("Gênero de jogo", max_length=50)
-    asd = models
 
     class Meta:
         verbose_name = "Gênero"
@@ -61,7 +61,7 @@ class Console(Item):
 class Game(Item):
     """Modelo para representar os jogos cadastrados"""
 
-    title = models.CharField("Nome do jogo", max_length=1024, unique=True)
+    title = models.CharField("Nome do jogo", max_length=1024)
     imagem = models.ImageField("Capa do Jogo ", upload_to="games", blank=True)
     genre = models.ForeignKey(
         Genre, verbose_name="Gênero", on_delete=models.CASCADE, blank=True, null=True
@@ -78,6 +78,12 @@ class Game(Item):
         verbose_name = "Jogo"
         verbose_name_plural = "Jogos"
         ordering = ["title"]
+        unique_together = [
+            [
+                "title",
+                "platform",
+            ]
+        ]
 
     def __str__(self):
         return self.title
@@ -110,6 +116,7 @@ class Evaluation(Item):
         verbose_name = "Avaliação"
         verbose_name_plural = "Avaliações"
         ordering = ["updated"]
+        unique_together = [["user", "platform", "game"]]
 
     def __str__(self):
         return self.title
