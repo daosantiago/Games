@@ -1,0 +1,69 @@
+- Criar ambiente virutual
+python -m venv _venv
+Coloque um "_" antes pra que a pasta fique na parte superior da lista na IDE
+
+- Ativar o ambiente virtual
+Para fazer a instalação das bibliotecas é necessário fazer a ativação do ambiente.
+Pode-se navegar via terminal até a pasta que contém o batch.
+No meu caso, clico no explorador do vscode com botão direito, clico em copy path e colo no terminal para executar
+
+- Atualizar pip
+python -m pip install --upgrade pip
+
+- Instalar Django e Django Rest Framework
+pip install django
+pip install djangorestframework
+
+- Criar um projeto django
+django-admin startproject MyGames
+
+- Executar o projeto para testar
+python manage.py runserver
+
+- Criar as tabelas iniciais de banco de dados do django
+O Django usa algumas tabelas básicas para seu funcionamento.
+Uma vez que a base do projeto já foi iniciada, é possível fazer a primeira "migração" para criar as primeiras tabelas
+python manage.py migrate
+
+- Criação de usuário superuser
+Agora que já temos a base de dados criada, podemos criara o superuser que poderá fazer acesso ao painel admin do django para visualizar os dados
+python manage.py createsuperuser
+
+- Testar superuser
+Iniciar o servidor e acessar http://127.0.0.1:8000/admin/ para tentar fazer login
+
+- Registrar o Rest Framework no projeto
+Para que o django reconheça o framework que foi instalado como parte do projeto, é necessário registrar o framework no arquivo settings.py da pasta principal do projeto, nesse caso é a primeira MyGames criada
+Basta adicionar 'rest_framework' ao fim da lista INSTALLED_APPS
+
+- Criar um app dentro do projeto
+python manage.py startapp api
+
+- Registrar um app criado no projeto
+Para que o django reconheça o app que foi criado como parte do projeto, é necessário registrar o app no arquivo settings.py da pasta principal do projeto, nesse caso é a primeira MyGames criada
+Basta adicionar o nome do app que foi criado ao fim da lista INSTALLED_APPS
+
+- Criar models
+Para criar os modelos que serão mapeados para a base de dados, devemos criar no arquivo models.py da app que estamos trabalhando
+Criei um modelo chamado Item para ser a base de todos os outros modelos.
+Nela contém apenas as colunas description, created, updated e active
+Para que esse modelo não seja criado na base de dados em forma de tabela, é necessário adicionar:
+class Meta:
+    abstract = True
+
+Eu já tinha feito uma migração antes de adicionar o class Meta:, então quando executei novamente a tabela "Item" foi excluída do banco de dados
+
+- Criação de modelo para Game
+Primeiro criei um modelo herdando Item e com apenas o campo "name"
+
+- Registrar e Visualizar o modelo no admin
+Para poder visualizar o modelo criado no painel de admin e assimpoder adicionar, editar e remover os dados pelo painel, temos que criar uma classe para isso no arquivo admin.py do app
+Basta criar uma classe que herda "admin.ModelAdmin" e fazer o registro desta classe com "admin.site.register(Game, Games)"
+Onde "Game" é o modelo que estamos registrando e "Games" é a classe que criamos para representar este modelo no admin
+
+- Alterar o campo created on game
+Havia criado o campo "created" como "auto_created" quando o correto seria "auto_now_add" para que seja registrado automaticamente o momento da criação do registro na tabela
+
+- Criação do modelo Console
+Criei um modelo para console, que deve ter um relacionamento com Game
+
