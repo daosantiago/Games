@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for game in games %}
+<option value="{{ game.pk }}">{{ game.title }}</option>
+{% endfor %}
