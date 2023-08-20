@@ -1,6 +1,8 @@
 from django.contrib import admin
 
-from .models import Game, Console, Genre, Difficulty, Evaluation
+from .forms import EvaluationForm
+
+from .models import Game, Console, Genre, Difficulty, Evaluation, Company
 
 # Register your models here.
 
@@ -35,10 +37,18 @@ class Games(admin.ModelAdmin):
 
 
 class Consoles(admin.ModelAdmin):
-    list_display = ("id", "name", "description", "created", "updated")
-    list_display_links = ("id", "name")
+    list_display = (
+        "id",
+        "name",
+        "shortName",
+        "company",
+        "description",
+        "created",
+        "updated",
+    )
+    list_display_links = ("id", "name", "shortName")
 
-    fields = ("name", "shortName", "description")
+    fields = ("name", "shortName", "company", "generation", "color", "description")
     search_fields = ("name",)
     list_per_page = 20
 
@@ -56,6 +66,18 @@ class Genres(admin.ModelAdmin):
 
     class Meta:
         model = Genre
+
+
+class Companies(admin.ModelAdmin):
+    list_display = ("id", "name", "description", "created", "updated")
+    list_display_links = ("id", "name")
+
+    fields = ("name", "description")
+    search_fields = ("name",)
+    list_per_page = 20
+
+    class Meta:
+        model = Company
 
 
 class Evaluations(admin.ModelAdmin):
@@ -79,7 +101,49 @@ class Evaluations(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
+class DifficultyAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "difficulty",
+        "difficulty_name",
+        "description",
+        "created",
+        "updated",
+    )
+
+
+class EvaluationAdmin(admin.ModelAdmin):
+    form = EvaluationForm
+    list_display = ("id", "title", "user")
+    list_filter = ("platform",)
+    add_form_template = "cad_evaluation.html"
+    change_form_template = "cad_evaluation.html"
+    # fields = ("title", "description", "platform", "game", "user")
+
+    fieldsets = (
+        (
+            "Informações do jogo",
+            {
+                "fields": ["title", "platform", "game", "score", "user"],
+            },
+        ),
+        (
+            "Texto",
+            {
+                "fields": [
+                    "description",
+                ]
+            },
+        ),
+    )
+
+    readonly_fields = ("user",)
+
+
 admin.site.register(Game, Games)
 admin.site.register(Console, Consoles)
 admin.site.register(Genre, Genres)
-admin.site.register(Evaluation, Evaluations)
+# admin.site.register(Evaluation, Evaluations)
+admin.site.register(Evaluation, EvaluationAdmin)
+admin.site.register(Company, Companies)
+admin.site.register(Difficulty, DifficultyAdmin)
