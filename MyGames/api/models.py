@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Item(models.Model):
     """Modelo para representar as informações comuns para todas as tabelas do banco de
     dados"""
 
-    description = models.TextField("Descrição")
+    description = models.TextField("Descrição", blank=True, null=True)
     created = models.DateTimeField("Criado em ", auto_now_add=True)
     updated = models.DateTimeField("Atualizado em ", auto_now=True)
     active = models.BooleanField("Ativo", default=True)
@@ -28,11 +29,50 @@ class Genre(Item):
 
 
 class Difficulty(Item):
-    name = models.CharField("Dificuldade do jogo", max_length=3)
+    # name = models.CharField("Dificuldade do jogo", max_length=3)
+    CHOICES = [
+        ("AAA", "AAA - O Mais Difícil"),
+        ("AA", "AA - Muito Difícil"),
+        ("A", "A - Difícil"),
+        ("B", "B - Médio"),
+        ("C", "C - Fácil"),
+    ]
+    difficulty = models.CharField(
+        "Nível", max_length=3, choices=CHOICES, unique=True, null=True
+    )
+
+    def get_difficulty_name(self):
+        # Retorna o nome correspondente à dificuldade selecionada
+        for code, difficulty in self.CHOICES:
+            if code == self.difficulty:
+                return difficulty
+        return "Desconhecido"
+
+    # Define o campo de leitura apenas para o nome da dificuldade
+    difficulty_name = property(get_difficulty_name)
+
+    # name = models.CharField("Nome", max_length=50, unique=True)
+    description = models.TextField("Descrição", blank=True, null=True)
 
     class Meta:
         verbose_name = "Dificuldade"
         verbose_name_plural = "Dificuldades"
+        ordering = ["difficulty"]
+
+    def __str__(self):
+        return self.name
+
+
+class Company(Item):
+    """Modelo para represnetar a empresa dona do console."""
+
+    name = models.CharField(
+        "Nome da Empresa", max_length=128, unique=True, blank=False, null=False
+    )
+
+    class Meta:
+        verbose_name = "Empresa"
+        verbose_name_plural = "Empresas"
         ordering = ["name"]
 
     def __str__(self):
@@ -48,6 +88,13 @@ class Console(Item):
         "Geração do console", max_length=250, blank=True, null=True
     )
     color = models.CharField("Cor do console", blank=True, max_length=15)
+    company = models.ForeignKey(
+        Company,
+        verbose_name="Empresa",
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "Console"
@@ -103,7 +150,6 @@ class Evaluation(Item):
         blank=True,
         null=True,
     )
-
     game = models.ForeignKey(
         Game,
         verbose_name="Jogo",
@@ -111,6 +157,14 @@ class Evaluation(Item):
         blank=True,
         null=True,
     )
+
+    score = models.IntegerField(
+        "Nota",
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+    )
+
+    game_time = models.DurationField("Tempo de jogo", blank=True, null=True)
+    # instance = MyModel.objects.create(duration=timedelta(days=2))
 
     class Meta:
         verbose_name = "Avaliação"
